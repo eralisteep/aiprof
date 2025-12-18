@@ -1,6 +1,6 @@
-const admin = require('firebase-admin');
-const fs = require('fs');
-const path = require('path');
+import admin from 'firebase-admin';
+import fs from 'fs';
+import path from 'path';
 
 // Инициализация Firebase Admin w
 const serviceAccount = {

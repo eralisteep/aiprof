@@ -22,4 +22,4 @@ class AITag {
   }
 }
 
-module.exports = AITag;
+export default AITag;

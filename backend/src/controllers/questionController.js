@@ -1,4 +1,4 @@
-const Question = require('../models/Question');
+import Question from '../models/Question.js';
 
 async function getQuestions(req, res) {
   try {
@@ -58,8 +58,4 @@ async function getAdaptiveQuestions(req, res) {
   }
 }
 
-module.exports = {
-  getQuestions,
-  getAdaptiveQuestions,
-  getQuestionsData
-};
+export { getQuestions, getAdaptiveQuestions, getQuestionsData };

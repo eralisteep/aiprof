@@ -28,4 +28,4 @@ class AIProfile {
   }
 }
 
-module.exports = AIProfile;
+export default AIProfile;

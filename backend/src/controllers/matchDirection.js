@@ -1,5 +1,5 @@
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
 
 // Сравнение профиля пользователя с профилем профессии (косинусное сходство)
 function similarity(userProfile, profProfile) {
@@ -53,4 +53,4 @@ async function matchDirections(userProfile, db) {
   return results[0];
 }
 
-module.exports = { matchDirections, similarity };
+export { matchDirections, similarity };

@@ -20,4 +20,4 @@ class Profession {
   }
 }
 
-module.exports = Profession;
+export default Profession;

@@ -1,11 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const admin = require('firebase-admin');
-const qrcode = require('qrcode');
-const session = require('express-session');
-const TestResult = require('./models/TestResult');
-const { v4: uuidv4 } = require('uuid');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import admin from 'firebase-admin';
+import qrcode from 'qrcode';
+import session from 'express-session';
+import TestResult from './models/TestResult.js';
+import { v4 as uuidv4 } from 'uuid';
+import 'dotenv/config';
+
+import { getQuestions, getAdaptiveQuestions, getQuestionsData } from './controllers/questionController.js';
+import answersRouter from './controllers/answers.js';
 
 const app = express();
 app.use(cors());
@@ -50,10 +53,8 @@ app.use((req, res, next) => {
 });
 
 // Controllers
-const { getQuestions, getAdaptiveQuestions, getQuestionsData } = require('./controllers/questionController');
 
-const router = require('./controllers/answers.js');
-app.use('/api/answers', router);
+app.use('/api/answers', answersRouter);
 // Routes
 // Получение вопросов
 app.get('/api/questions', (req, res) => getQuestions(req, res));

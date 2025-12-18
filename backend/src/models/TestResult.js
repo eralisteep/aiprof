@@ -20,4 +20,4 @@ class TestResult {
   }
 }
 
-module.exports = TestResult;
+export default TestResult;

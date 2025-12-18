@@ -1,10 +1,9 @@
-const express = require('express');
-const router = express.Router();
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import { matchDirections } from './matchDirection.js';
 
-// Load aiTags once at startup (for grouping)
-const { matchDirections } = require('./matchDirection');
+const router = express.Router();
 
 // Calculate profile from answers
 function calculateProfile(answers, questions) {
@@ -166,4 +165,4 @@ router.post('/', async (req, res) => {
 });
   
 
-module.exports = router;
+export default router;
