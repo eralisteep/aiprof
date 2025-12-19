@@ -7,7 +7,7 @@ import TestResult from './models/TestResult.js';
 import { v4 as uuidv4 } from 'uuid';
 import 'dotenv/config';
 
-import { getQuestions, getAdaptiveQuestions, getQuestionsData } from './controllers/questionController.js';
+import { getQuestions, getQuestionsData } from './controllers/questionController.js';
 import answersRouter from './controllers/answers.js';
 
 const app = express();
@@ -60,7 +60,7 @@ app.use('/api/answers', answersRouter);
 app.get('/api/questions', (req, res) => getQuestions(req, res));
 
 // Получение адаптивных вопросов
-app.post('/api/get-adaptive-questions', (req, res) => getAdaptiveQuestions(req, res));
+// app.post('/api/get-adaptive-questions', (req, res) => getAdaptiveQuestions(req, res));
 
 app.post('/api/result', (req, res) => {
     const { answers } = req.body;
