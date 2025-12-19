@@ -5,7 +5,7 @@ async function getQuestions(req, res) {
     const stage = req.query.stage || 'core';
     // const snapshot = await req.db.collection('questions').where('stage', '==', stage).where('active', '==', true).get();
     const snapshot = await req.db.collection('questions').get();
-    const questions = snapshot.docs.map(doc => Question.fromFirestore(doc));
+    const questions = snapshot.docs.map(doc => doc.data());
     res.json(questions);
   } catch (error) {
     res.status(500).json({ error: error.message });

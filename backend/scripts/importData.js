@@ -65,7 +65,7 @@ async function importData() {
     // await aiTagsBatch.commit();
     // console.log(`Imported ${aiTagsArray.length} aiTags`);
 
-    // Импорт professions
+    // // Импорт professions
     // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions.json'), 'utf8'));
     // const professionsBatch = db.batch();
     // professionsData.forEach(prof => {
@@ -75,7 +75,7 @@ async function importData() {
     // await professionsBatch.commit();
     // console.log(`Imported ${professionsData.length} professions`);
 
-    // Импорт directions
+    // // Импорт directions
     // const directionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/directions.json'), 'utf8'));
     // const directionsBatch = db.batch();
     // directionsData.forEach(dir => {
@@ -86,16 +86,16 @@ async function importData() {
     // console.log(`Imported ${directionsData.length} directions`);
 
     // Импорт questions
-    const questionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/questions_modified.json'), 'utf8'));
-    const questionsBatch = db.batch();
-    questionsData.forEach(q => {
-      const docRef = db.collection('questions').doc(q.id);
-      questionsBatch.set(docRef, q);
-    });
-    await questionsBatch.commit();
-    console.log(`Imported ${questionsData.length} questions`);
+    // const questionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/questions.json'), 'utf8'));
+    // const questionsBatch = db.batch();
+    // questionsData.forEach(q => {
+    //   const docRef = db.collection('questions').doc(q.id);
+    //   questionsBatch.set(docRef, q);
+    // });
+    // await questionsBatch.commit();
+    // console.log(`Imported ${questionsData.length} questions`);
 
-    console.log('Data import completed successfully!');
+    // console.log('Data import completed successfully!');
   } catch (error) {
     console.error('Error importing data:', error);
   } finally {
