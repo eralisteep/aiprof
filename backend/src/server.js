@@ -3,6 +3,7 @@ import cors from 'cors';
 import admin from 'firebase-admin';
 import qrcode from 'qrcode';
 import session from 'express-session';
+import hbs from 'hbs';
 import TestResult from './models/TestResult.js';
 import { v4 as uuidv4 } from 'uuid';
 import 'dotenv/config';
