@@ -1,7 +1,9 @@
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
+
 import { matchDirections } from './matchDirection.js';
+import analyzeTestResult from './AIController.js';
 
 const router = express.Router();
 
@@ -157,7 +159,9 @@ router.post('/', async (req, res) => {
       timestamp: new Date()
     });
 
-    res.json({ profile: groupedProfile, matchResults });
+    const analysis = await analyzeTestResult(answers, groupedProfile, matchResults, req.body.language, questions)
+
+    res.json({ profile: groupedProfile, matchResults, analysis });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
