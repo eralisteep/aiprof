@@ -119,10 +119,30 @@ app.get("/qr", async (req, res) => {
       margin: 2,         // отступы
       errorCorrectionLevel: "H" // лучше читается
     });
-    res.render("qr.hbs", {
-      title: "QR Code",
-      qrcode: QRcode
-    });
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+              body{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+              }
+              img{
+                  text-align: center;
+              }
+          </style>
+          <title>Document</title>
+      </head>
+      <body>
+          <img src="${QRcode}" alt="">
+      </body>
+      </html>
+    `);
   } catch (error) {
     console.error('Error generating QR code:', error);
     res.status(500).json({ error: 'Failed to generate QR code' });
