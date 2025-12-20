@@ -12,7 +12,12 @@ if (!OPENAI_API_KEY) {
 
 // Формируем промпт для анализа
 const prompt = `Проанализируй результаты теста пользователя по вопросам и ответам. Ответь кратко и по делу: какие профессии подходят пользователю, над какими навыками стоит поработать, и дай 1-2 рекомендации. Формат ответа: короткий текст !!!обязательно на языке ${language}.\n\nВопросы:\n${questions.map((q, i) => `${i+1}. ${q.text.ru}`).join("\n")}\n\nОтветы пользователя (номера вариантов):\n${Object.entries(answers).map(([qid, ans]) => `${qid}: ${ans}`).join(", ")}\n\nПрофиль пользователя: ${JSON.stringify(groupedProfile)}\n\nРезультаты матчинга направлений: ${JSON.stringify(matchResults)}`;
-
+console.log(language)
+console.log("Промпт для OpenAI:", prompt);
+const content = `${language !== "ru"
+? "Сен кәсіби бағдар беру саласының сарапшысысың. Жауаптарды қысқа, құрылымды және нақты бер. Сен тек қазақ тілінде жауап бересің. Орыс тілінде жауап беруге ҚАТАҢ ТЫЙЫМ САЛЫНАДЫ."
+: "Ты эксперт по профориентации. Отвечай кратко, структурированно и только по делу на языке. Ты отвечаешь только на русском языке."}`
+console.log("Системное сообщение для OpenAI:", content);
 try {
     const response = await axios.post(
     "https://api.openai.com/v1/chat/completions",
@@ -21,10 +26,7 @@ try {
         messages: [
         {
             role: "system",
-            content: `Ты эксперт по профориентации. Отвечай кратко, структурированно и только по делу на языке ${language}.
-            ${language !== "ru"
-            ? "Сен тек қазақ тілінде жауап бересің. Орыс тілінде жауап беруге ҚАТАҢ ТЫЙЫМ САЛЫНАДЫ."
-            : "Ты отвечаешь только на русском языке."}`
+            content: content
         },
         { role: "user", content: prompt },
         ],
@@ -40,6 +42,7 @@ try {
     );
 
     const resultText = response.data.choices?.[0]?.message?.content;
+    console.log("Ответ OpenAI:", resultText);
     if (!resultText) {
     throw new Error("Ответ OpenAI пустой или некорректный.");
     }
