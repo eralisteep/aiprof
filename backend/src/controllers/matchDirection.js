@@ -35,7 +35,6 @@ async function matchDirections(userProfile, db) {
       score: Number(similarity(userProfile, prof.profile).toFixed(3))
     }));
     scoredProfs.sort((a, b) => b.score - a.score);
-    // Оставляем только топ-3 профессии
     const topProfs = scoredProfs.slice(0, 5);
     return {
       directionId: dir.id,
@@ -49,8 +48,7 @@ async function matchDirections(userProfile, db) {
     const maxB = b.professions.length > 0 ? b.professions[0].score : 0;
     return maxB - maxA;
   });
-  // Оставляем только топ-3 направления
-  return results[0];
+  return results.slice(0, 2);
 }
 
 export { matchDirections, similarity };
