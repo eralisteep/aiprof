@@ -148,6 +148,48 @@ app.get("/qr", async (req, res) => {
   }
 });
 
+app.get("/qr2", async (req, res) => {
+  try {
+    const token = uuidv4();
+    const sessionID = req.sessionID;
+    sessionTokens.set(token, sessionID);
+
+    const url = `http://careerit.vercel.app`;
+    const QRcode = await qrcode.toDataURL(url, {
+      width: 600,        // размер в пикселях (главный параметр)
+      margin: 2,         // отступы
+      errorCorrectionLevel: "H" // лучше читается
+    });
+    res.send(`
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <style>
+              body{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  height: 100vh;
+              }
+              img{
+                  text-align: center;
+              }
+          </style>
+          <title>Document</title>
+      </head>
+      <body>
+          <img src="${QRcode}" alt="">
+      </body>
+      </html>
+    `);
+  } catch (error) {
+    console.error('Error generating QR code:', error);
+    res.status(500).json({ error: 'Failed to generate QR code' });
+  }
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);

@@ -66,7 +66,7 @@ async function importData() {
     // console.log(`Imported ${aiTagsArray.length} aiTags`);
 
     // // Импорт professions
-    // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions.json'), 'utf8'));
+    // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions_translated.json'), 'utf8'));
     // const professionsBatch = db.batch();
     // professionsData.forEach(prof => {
     //   const docRef = db.collection('professions').doc(prof.id);
