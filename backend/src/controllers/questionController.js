@@ -2,11 +2,10 @@ import Question from '../models/Question.js';
 
 async function getQuestions(req, res) {
   try {
-    const stage = req.query.stage || 'core';
-    // const snapshot = await req.db.collection('questions').where('stage', '==', stage).where('active', '==', true).get();
+    const { num } = req.body;
     const snapshot = await req.db.collection('questions').get();
     const questions = snapshot.docs.map(doc => doc.data());
-    res.json(questions);
+    num?res.json(questions.slice(0, num)):res.json(questions)
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
