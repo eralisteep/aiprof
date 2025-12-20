@@ -154,7 +154,7 @@ app.get("/qr2", async (req, res) => {
     const sessionID = req.sessionID;
     sessionTokens.set(token, sessionID);
 
-    const url = `https://careerit.vercel.app`;
+    const url = `https://careerit.vercel.app/`;
     const QRcode = await qrcode.toDataURL(url, {
       width: 600,        // размер в пикселях (главный параметр)
       margin: 2,         // отступы
