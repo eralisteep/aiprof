@@ -1,7 +1,4 @@
 import express from 'express';
-import fs from 'fs';
-import path from 'path';
-
 import { matchDirections } from './matchDirection.js';
 import analyzeTestResult from './AIController.js';
 
@@ -64,52 +61,64 @@ function normalizeProfile(profile, questions) {
   return normalized;
 }
 
-// Group tags by categories
+// Group tags by categories с поддержкой объектов (value, ru, kz)
 function groupTags(normalized, aiTags) {
   const groups = {
     personality: {
-      core_traits: {},
-      social_traits: {},
-      cognitive_traits: {}
+      title: { ru: "Личностные качества", kz: "Жеке қасиеттер" },
+      core_traits: { title: { ru: "Основные черты", kz: "Негізгі қасиеттер" } },
+      social_traits: { title: { ru: "Социальные черты", kz: "Әлеуметтік қасиеттер" } },
+      cognitive_traits: { title: { ru: "Когнитивные черты", kz: "Когнитивтік қасиеттер" } },
     },
-    interests: {}
+    interests: {
+      title: { ru: "Интересы", kz: "Қызығушылықтар" }
+    }
   };
 
-  // Create mapping tag -> { category, subCategory }
-  const tagMap = {};
-  for (const [category, subCats] of Object.entries(aiTags.AI_TAGS)) {
-    if (category === 'personality') {
-      for (const [subCat, tags] of Object.entries(subCats)) {
-        for (const tag of Object.keys(tags)) {
-          tagMap[tag] = { category, subCategory: subCat };
+  // Создаем плоскую карту для быстрого поиска метаданных тега по коду
+  const tagMetadata = {};
+  const rawTags = aiTags.AI_TAGS;
+
+  for (const [cat, content] of Object.entries(rawTags)) {
+    if (cat === 'personality') {
+      for (const [subCat, tags] of Object.entries(content)) {
+        for (const [code, info] of Object.entries(tags)) {
+          tagMetadata[code] = { category: cat, subCategory: subCat, ...info };
         }
       }
-    } else if (category === 'interests') {
-      for (const tag of Object.keys(subCats)) {
-        tagMap[tag] = { category, subCategory: null };
+    } else {
+      for (const [code, info] of Object.entries(content)) {
+        tagMetadata[code] = { category: cat, subCategory: null, ...info };
       }
     }
   }
 
-  // Group the normalized values
-  for (const [tag, value] of Object.entries(normalized)) {
-    const mapping = tagMap[tag];
-    if (mapping) {
-      if (mapping.category === 'personality') {
-        groups.personality[mapping.subCategory][tag] = value;
-      } else if (mapping.category === 'interests') {
-        groups.interests[tag] = value;
+  // Распределяем нормализованные значения
+  for (const [tagCode, value] of Object.entries(normalized)) {
+    const info = tagMetadata[tagCode];
+    
+    // Формируем объект тега
+    const tagObject = {
+      value: value,
+      ru: info?.ru || tagCode,
+      kz: info?.kz || tagCode
+    };
+
+    if (info) {
+      if (info.category === 'personality') {
+        groups.personality[info.subCategory][tagCode] = tagObject;
+      } else {
+        groups.interests[tagCode] = tagObject;
       }
     } else {
-      // If tag not found, add to interests by default
-      groups.interests[tag] = value;
+      // Если тега нет в базе aiTags, добавляем в интересы
+      groups.interests[tagCode] = tagObject;
     }
   }
 
   return groups;
 }
 
-// POST /api/answers
 router.post('/', async (req, res) => {
   const { answers, user } = req.body || {};
   if (!answers || typeof answers !== 'object') {
@@ -117,24 +126,29 @@ router.post('/', async (req, res) => {
   }
 
   try {
-    // Load questions from Firestore
     const questionsSnapshot = await req.db.collection('questions').get();
     const questions = questionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Load aiTags from Firestore
     const aiTagsSnapshot = await req.db.collection('aiTags').get();
     const aiTagsData = {};
+    
     aiTagsSnapshot.docs.forEach(doc => {
       const data = doc.data();
+      // Исправлено: берем type напрямую или по условию
       const category = data.type === 'personality' ? 'personality' : 'interests';
+      
       if (!aiTagsData[category]) aiTagsData[category] = {};
+      
+      const tagInfo = { ru: data.ru, kz: data.kz };
+
       if (data.subCategory) {
         if (!aiTagsData[category][data.subCategory]) aiTagsData[category][data.subCategory] = {};
-        aiTagsData[category][data.subCategory][data.code] = { ru: data.ru, kz: data.kz };
+        aiTagsData[category][data.subCategory][data.code] = tagInfo;
       } else {
-        aiTagsData[category][data.code] = { ru: data.ru, kz: data.kz };
+        aiTagsData[category][data.code] = tagInfo;
       }
     });
+
     const aiTags = { AI_TAGS: aiTagsData };
 
     const profile = calculateProfile(answers, questions);
@@ -142,24 +156,18 @@ router.post('/', async (req, res) => {
     const groupedProfile = groupTags(normalized, aiTags);
     const matchResults = await matchDirections(normalized, req.db);
 
-    // Save to results collection
-    user?
-    await req.db.collection('results').add({
-      user,
+    // Сохранение в БД
+    const resultData = {
       answers,
       profile: groupedProfile,
       matchResults,
       timestamp: new Date()
-    })
-    : 
-    await req.db.collection('results').add({
-      answers,
-      profile: groupedProfile,
-      matchResults,
-      timestamp: new Date()
-    });
+    };
+    if (user) resultData.user = user;
+    
+    await req.db.collection('results').add(resultData);
 
-    const analysis = await analyzeTestResult(answers, groupedProfile, matchResults, req.body.language, questions)
+    const analysis = await analyzeTestResult(answers, groupedProfile, matchResults, req.body.language, questions);
 
     res.json({ profile: groupedProfile, matchResults, analysis });
   } catch (error) {
@@ -167,6 +175,5 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-  
 
 export default router;
