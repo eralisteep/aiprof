@@ -155,19 +155,20 @@ router.post('/', async (req, res) => {
     const normalized = normalizeProfile(profile, questions);
     const groupedProfile = groupTags(normalized, aiTags);
     const matchResults = await matchDirections(normalized, req.db);
+    
+    const analysis = await analyzeTestResult(answers, groupedProfile, matchResults, req.body.language, questions);
 
     // Сохранение в БД
     const resultData = {
       answers,
       profile: groupedProfile,
       matchResults,
+      analysis,
       timestamp: new Date()
     };
     if (user) resultData.user = user;
     
     await req.db.collection('results').add(resultData);
-
-    const analysis = await analyzeTestResult(answers, groupedProfile, matchResults, req.body.language, questions);
 
     res.json({ profile: groupedProfile, matchResults, analysis });
   } catch (error) {
