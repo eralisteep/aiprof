@@ -36,7 +36,7 @@ async function matchDirections(userProfile, db) {
     }));
     scoredProfs.sort((a, b) => b.score - a.score);
     // Оставляем только топ-3 профессии
-    const topProfs = scoredProfs.slice(0, 2);
+    const topProfs = scoredProfs.slice(0, 5);
     return {
       directionId: dir.id,
       directionTitle: dir.title,

@@ -3,7 +3,8 @@ import axios from "axios";
 const OPENAI_API_KEY = process.env.CHATGPT_API_KEY;
 
 async function analyzeTestResult(answers, groupedProfile, matchResults, language, questions) {
-language? null : language = "ru";
+language? language = language : language = "ru";
+console.log("Анализ результата теста на языке:", language);
 
 if (!OPENAI_API_KEY) {
     console.error("Ключ OpenAI API отсутствует. Проверьте переменные окружения.");
@@ -11,8 +12,9 @@ if (!OPENAI_API_KEY) {
 }
 
 // Формируем промпт для анализа
-const prompt = `Проанализируй результаты теста пользователя по вопросам и ответам. Ответь кратко и по делу: какие профессии подходят пользователю, над какими навыками стоит поработать, и дай 1-2 рекомендации. Формат ответа: короткий текст на языке ${language}.\n\nВопросы:\n${questions.map((q, i) => `${i+1}. ${q.text.ru}`).join("\n")}\n\nОтветы пользователя (номера вариантов):\n${Object.entries(answers).map(([qid, ans]) => `${qid}: ${ans}`).join(", ")}\n\nПрофиль пользователя: ${JSON.stringify(groupedProfile)}\n\nРезультаты матчинга направлений: ${JSON.stringify(matchResults)}`;
+const prompt = `Проанализируй результаты теста пользователя по вопросам и ответам. Ответь кратко и по делу: какие профессии подходят пользователю, над какими навыками стоит поработать, и дай 1-2 рекомендации. Формат ответа: короткий текст !!!обязательно на языке ${language}.\n\nВопросы:\n${questions.map((q, i) => `${i+1}. ${q.text.ru}`).join("\n")}\n\nОтветы пользователя (номера вариантов):\n${Object.entries(answers).map(([qid, ans]) => `${qid}: ${ans}`).join(", ")}\n\nПрофиль пользователя: ${JSON.stringify(groupedProfile)}\n\nРезультаты матчинга направлений: ${JSON.stringify(matchResults)}`;
 
+console.log("fdsad:" + prompt)
 try {
     const response = await axios.post(
     "https://api.openai.com/v1/chat/completions",
@@ -21,7 +23,10 @@ try {
         messages: [
         {
             role: "system",
-            content: `Ты эксперт по профориентации. Отвечай кратко, структурированно и только по делу на языке ${language}.`,
+            content: `Ты эксперт по профориентации. Отвечай кратко, структурированно и только по делу на языке ${language}.
+            ${language !== "ru"
+            ? "Сен тек қазақ тілінде жауап бересің. Орыс тілінде жауап беруге ҚАТАҢ ТЫЙЫМ САЛЫНАДЫ."
+            : "Ты отвечаешь только на русском языке."}`
         },
         { role: "user", content: prompt },
         ],

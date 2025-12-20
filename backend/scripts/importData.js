@@ -65,15 +65,15 @@ async function importData() {
     // await aiTagsBatch.commit();
     // console.log(`Imported ${aiTagsArray.length} aiTags`);
 
-    // // Импорт professions
-    // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions.json'), 'utf8'));
-    // const professionsBatch = db.batch();
-    // professionsData.forEach(prof => {
-    //   const docRef = db.collection('professions').doc(prof.id);
-    //   professionsBatch.set(docRef, prof);
-    // });
-    // await professionsBatch.commit();
-    // console.log(`Imported ${professionsData.length} professions`);
+    // Импорт professions
+    const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions.json'), 'utf8'));
+    const professionsBatch = db.batch();
+    professionsData.forEach(prof => {
+      const docRef = db.collection('professions').doc(prof.id);
+      professionsBatch.set(docRef, prof);
+    });
+    await professionsBatch.commit();
+    console.log(`Imported ${professionsData.length} professions`);
 
     // // Импорт directions
     // const directionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/directions.json'), 'utf8'));
