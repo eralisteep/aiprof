@@ -85,14 +85,14 @@ async function importData() {
     // await directionsBatch.commit();
     // console.log(`Imported ${directionsData.length} directions`);
 
-    // Импорт questions
-    const questionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/questions.json'), 'utf8'));
-    const questionsBatch = db.batch();
-    questionsData.forEach(q => {
-      const docRef = db.collection('questions').doc(q.id);
-      questionsBatch.set(docRef, q);
-    });
-    await questionsBatch.commit();
+    // // Импорт questions
+    // const questionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/questions.json'), 'utf8'));
+    // const questionsBatch = db.batch();
+    // questionsData.forEach(q => {
+    //   const docRef = db.collection('questions').doc(q.id);
+    //   questionsBatch.set(docRef, q);
+    // });
+    // await questionsBatch.commit();
     // console.log(`Imported ${questionsData.length} questions`);
 
     // console.log('Data import completed successfully!');
