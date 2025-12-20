@@ -126,7 +126,7 @@ router.post('/', async (req, res) => {
     const aiTagsData = {};
     aiTagsSnapshot.docs.forEach(doc => {
       const data = doc.data();
-      const category = data.type === 'soft' ? 'personality' : 'interests';
+      const category = data.type === 'personality' ? 'personality' : 'interests';
       if (!aiTagsData[category]) aiTagsData[category] = {};
       if (data.subCategory) {
         if (!aiTagsData[category][data.subCategory]) aiTagsData[category][data.subCategory] = {};
