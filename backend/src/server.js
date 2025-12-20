@@ -112,7 +112,7 @@ app.get("/qr", async (req, res) => {
     const sessionID = req.sessionID;
     sessionTokens.set(token, sessionID);
 
-    const url = `http://192.168.154.122:8080/`;
+    const url = `https://aiprof.collegeit.edu.kz/`;
     const QRcode = await qrcode.toDataURL(url, {
       width: 600,        // размер в пикселях (главный параметр)
       margin: 2,         // отступы
