@@ -65,14 +65,11 @@ function normalizeProfile(profile, questions) {
 function groupTags(normalized, aiTags) {
   const groups = {
     personality: {
-      title: { ru: "Личностные качества", kz: "Жеке қасиеттер" },
       core_traits: { title: { ru: "Основные черты", kz: "Негізгі қасиеттер" } },
       social_traits: { title: { ru: "Социальные черты", kz: "Әлеуметтік қасиеттер" } },
       cognitive_traits: { title: { ru: "Когнитивные черты", kz: "Когнитивтік қасиеттер" } },
     },
-    interests: {
-      title: { ru: "Интересы", kz: "Қызығушылықтар" }
-    }
+    interests: {}
   };
 
   // Создаем плоскую карту для быстрого поиска метаданных тега по коду
