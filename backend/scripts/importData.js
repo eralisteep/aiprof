@@ -34,37 +34,37 @@ async function importData() {
   try {
     console.log('Starting data import...');
 
-    const aiTagsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/aiTags.json'), 'utf8'));
-    const aiTagsBatch = db.batch();
-    // Assuming aiTagsData is an object, convert to array or handle accordingly
-    // For now, assuming it's an object with AI_TAGS
-    const categoryToType = {
-      personality: 'personality',
-      interests: 'interests',
-    };
-    const aiTagsArray = [];
-    Object.entries(aiTagsData.AI_TAGS).forEach(([category, tags]) => {
-      if (category === 'personality') {
-        Object.entries(tags).forEach(([subCategory, subTags]) => {
-          Object.entries(subTags).forEach(([key, value]) => {
-            aiTagsArray.push({ code: key, ru: value.ru, kz: value.kz, type: categoryToType[category] || 'soft', subCategory });
-          });
-        });
-      } else if (category === 'interests') {
-        Object.entries(tags).forEach(([key, value]) => {
-          aiTagsArray.push({ code: key, ru: value.ru, kz: value.kz, type: categoryToType[category] || 'soft', subCategory: null });
-        });
-      }
-    });
-    aiTagsArray.forEach(tag => {
-      const docRef = db.collection('aiTags').doc(tag.code);
-      aiTagsBatch.set(docRef, tag);
-    });
-    await aiTagsBatch.commit();
-    console.log(`Imported ${aiTagsArray.length} aiTags`);
+    // const aiTagsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/aiTags.json'), 'utf8'));
+    // const aiTagsBatch = db.batch();
+    // // Assuming aiTagsData is an object, convert to array or handle accordingly
+    // // For now, assuming it's an object with AI_TAGS
+    // const categoryToType = {
+    //   personality: 'personality',
+    //   interests: 'interests',
+    // };
+    // const aiTagsArray = [];
+    // Object.entries(aiTagsData.AI_TAGS).forEach(([category, tags]) => {
+    //   if (category === 'personality') {
+    //     Object.entries(tags).forEach(([subCategory, subTags]) => {
+    //       Object.entries(subTags).forEach(([key, value]) => {
+    //         aiTagsArray.push({ code: key, ru: value.ru, kz: value.kz, type: categoryToType[category] || 'soft', subCategory });
+    //       });
+    //     });
+    //   } else if (category === 'interests') {
+    //     Object.entries(tags).forEach(([key, value]) => {
+    //       aiTagsArray.push({ code: key, ru: value.ru, kz: value.kz, type: categoryToType[category] || 'soft', subCategory: null });
+    //     });
+    //   }
+    // });
+    // aiTagsArray.forEach(tag => {
+    //   const docRef = db.collection('aiTags').doc(tag.code);
+    //   aiTagsBatch.set(docRef, tag);
+    // });
+    // await aiTagsBatch.commit();
+    // console.log(`Imported ${aiTagsArray.length} aiTags`);
 
     // // Импорт professions
-    // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions_translated.json'), 'utf8'));
+    // const professionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/professions_updated.json'), 'utf8'));
     // const professionsBatch = db.batch();
     // professionsData.forEach(prof => {
     //   const docRef = db.collection('professions').doc(prof.id);
@@ -73,15 +73,34 @@ async function importData() {
     // await professionsBatch.commit();
     // console.log(`Imported ${professionsData.length} professions`);
 
-    // // Импорт directions
-    // const directionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/directions.json'), 'utf8'));
+    // // Импорт aiTags
+    // const directionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/aiTags.json'), 'utf8'));
     // const directionsBatch = db.batch();
     // directionsData.forEach(dir => {
-    //   const docRef = db.collection('directions').doc(dir.id);
+    //   const docRef = db.collection('aiTags').doc(dir.code);
     //   directionsBatch.set(docRef, dir);
     // });
     // await directionsBatch.commit();
-    // console.log(`Imported ${directionsData.length} directions`);
+    // console.log(`Imported ${directionsData.length} aiTags`);
+    
+// // Импорт colleges
+// const directionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/colleges.json'), 'utf8'));
+// const directionsBatch = db.batch();
+
+// directionsData.forEach(dir => {
+//   // Принудительно конвертируем id в строку и проверяем, что он существует
+//   const docId = dir.id !== undefined && dir.id !== null ? dir.id.toString() : null;
+
+//   if (docId) {
+//     const docRef = db.collection('colleges').doc(docId);
+//     directionsBatch.set(docRef, dir);
+//   } else {
+//     console.warn(`Skipping item because id is missing:`, dir);
+//   }
+// });
+
+// await directionsBatch.commit();
+// console.log(`Imported ${directionsData.length} colleges`);
 
     // // Импорт questions
     // const questionsData = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/questions.json'), 'utf8'));

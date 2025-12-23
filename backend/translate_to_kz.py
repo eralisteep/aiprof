@@ -31,7 +31,7 @@ def translate_fields(obj, translator):
     return count
 
 def main():
-    input_file = os.path.join('data', 'professions.json')
+    input_file = os.path.join('data', 'colleges.json')
     output_file = os.path.join('data', 'professions_translated.json')
 
     if not os.path.exists(input_file):

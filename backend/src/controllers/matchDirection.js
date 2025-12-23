@@ -30,8 +30,7 @@ async function matchDirections(userProfile, db) {
     const profs = professions.filter(p => p.directionId === dir.id);
     // Для каждой профессии считаем score и сортируем
     const scoredProfs = profs.map(prof => ({
-      id: prof.id,
-      title: prof.title,
+      profesession:prof,
       score: Number(similarity(userProfile, prof.profile).toFixed(3))
     }));
     scoredProfs.sort((a, b) => b.score - a.score);
