@@ -17,36 +17,58 @@ function similarity(userProfile, profProfile) {
   return dot / (Math.sqrt(userNorm) * Math.sqrt(profNorm));
 }
 
-// Для каждого направления ищем до трех лучших профессий по совпадению
 async function matchDirections(userProfile, db) {
-  // Load directions and professions from Firestore
+  // Загружаем направления
   const directionsSnapshot = await db.collection('directions').get();
   const directions = directionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+  // Загружаем профессии
   const professionsSnapshot = await db.collection('professions').get();
   const professions = professionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+  // Загружаем колледжи
+  const collegesSnapshot = await db.collection('colleges').get();
+  const colleges = collegesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  // Быстрый словарь для колледжей
+  const collegeMap = {};
+  colleges.forEach(col => {
+    collegeMap[col.id] = col;
+  });
+
   const results = directions.map(dir => {
     const profs = professions.filter(p => p.directionId === dir.id);
-    // Для каждой профессии считаем score и сортируем
-    const scoredProfs = profs.map(prof => ({
-      profesession:prof,
-      score: Number(similarity(userProfile, prof.profile).toFixed(3))
-    }));
+
+    const scoredProfs = profs.map(prof => {
+      // collegesIds например: ["almaty-1", "astana-3"]
+      const relatedColleges = (prof.collegeIds || [])
+        .map(cid => collegeMap[cid])
+        .filter(Boolean);
+
+      return {
+        id: prof.id,
+        title: prof.title,
+        score: Number(similarity(userProfile, prof.profile).toFixed(3)),
+        colleges: relatedColleges   // ← ДОБАВИЛИ СЮДА
+      };
+    });
+
     scoredProfs.sort((a, b) => b.score - a.score);
-    const topProfs = scoredProfs.slice(0, 5);
+
     return {
       directionId: dir.id,
       directionTitle: dir.title,
-      professions: topProfs
+      professions: scoredProfs.slice(0, 5)
     };
   });
-  // Сортируем направления по максимальному совпадению среди профессий
+
+  // Сортировка направлений по максимальному совпадению
   results.sort((a, b) => {
-    const maxA = a.professions.length > 0 ? a.professions[0].score : 0;
-    const maxB = b.professions.length > 0 ? b.professions[0].score : 0;
+    const maxA = a.professions.length ? a.professions[0].score : 0;
+    const maxB = b.professions.length ? b.professions[0].score : 0;
     return maxB - maxA;
   });
+
   return results.slice(0, 2);
 }
 

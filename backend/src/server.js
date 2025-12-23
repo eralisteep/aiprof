@@ -9,6 +9,7 @@ import 'dotenv/config';
 
 import { getQuestions, getQuestionsData } from './controllers/questionController.js';
 import answersRouter from './controllers/answers.js';
+import getColleges from './controllers/collegesController.js';
 
 const app = express();
 app.use(cors());
@@ -58,6 +59,8 @@ app.use('/api/answers', answersRouter);
 // Routes
 // Получение вопросов
 app.get('/api/questions', (req, res) => getQuestions(req, res));
+
+app.get('/api/colleges', (req, res) => getColleges(req, res));
 
 // Получение адаптивных вопросов
 // app.post('/api/get-adaptive-questions', (req, res) => getAdaptiveQuestions(req, res));
