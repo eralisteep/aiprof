@@ -1,11 +1,10 @@
 import axios from "axios";
 
-const OPENAI_API_KEY = process.env.CHATGPT_API_KEY;
 
 async function analyzeTestResult(answers, groupedProfile, matchResults, language, questions) {
 language? language = language : language = "ru";
 
-if (!OPENAI_API_KEY) {
+if (!process.env.AI_KEY) {
     console.error("Ключ OpenAI API отсутствует. Проверьте переменные окружения.");
     throw new Error("Ключ OpenAI API не найден. Обратитесь к администратору.");
 }
@@ -35,9 +34,9 @@ const content = `${language !== "ru"
 console.log("Системное сообщение для OpenAI:", content);
 try {
     const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
+    process.env.AI_URL,
     {
-        model: "gpt-3.5-turbo",
+        model: process.env.AI_MODEL,
         messages: [
         {
             role: "system",
@@ -50,7 +49,7 @@ try {
     },
     {
         headers: {
-        Authorization: `Bearer ${OPENAI_API_KEY}`,
+        Authorization: `Bearer ${process.env.AI_KEY}`,
         "Content-Type": "application/json",
         },
     }
