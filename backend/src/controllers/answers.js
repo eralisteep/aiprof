@@ -174,4 +174,30 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.get('/', async (req, res) => {
+  const { grade, school } = req.body || {};
+  try {
+    const answersSnapshot = await req.db.collection('results').get();
+    let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    if (school && grade) {
+      answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
+    } else {
+      if (school || grade){
+        if (grade) {
+          console.log(grade)
+          answers = answers.filter((a)=>a?.user?.grade == grade)
+        }
+        if (school) {
+          answers = answers.filter((a)=>a?.user?.school == school)
+        }
+      }
+    }
+    res.json(answers)
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+
+})
+
 export default router;

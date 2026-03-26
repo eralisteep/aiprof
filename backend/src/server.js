@@ -9,6 +9,7 @@ import 'dotenv/config';
 
 import { getQuestions, getQuestionsData } from './controllers/questionController.js';
 import answersRouter from './controllers/answers.js';
+import authRouter from './controllers/authRouter.js';
 import getColleges from './controllers/collegesController.js';
 
 const app = express();
@@ -55,6 +56,7 @@ app.use((req, res, next) => {
 
 // Controllers
 
+app.use('/api/auth', authRouter);
 app.use('/api/answers', answersRouter);
 // Routes
 // Получение вопросов
