@@ -14,8 +14,8 @@ import authRouter from './controllers/authRouter.js';
 import getColleges from './controllers/collegesController.js';
 
 const app = express();
-const allowedOrigins = ["http://localhost:3001", "http://localhost:3000"];
-app.use(cors({
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:3001,http://localhost:3000").split(",").map(o => o.trim());
+const corsOptions = {
   origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
@@ -25,11 +25,9 @@ app.use(cors({
   },
   credentials: true,
   exposedHeaders: ["set-cookie"]
-}));
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+};
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(session({
   secret: 'your-secret-key', // Замените на безопасный секрет

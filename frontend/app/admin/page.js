@@ -13,22 +13,23 @@ export default function ScheduleUploadPage() {
     setStatus("");
   };
 
-  const handleUpload = async () => {
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000";
 
+  const handleUpload = async () => {
 
     setLoading(true);
     setStatus("⏳ Загружается...");
 
     try {
-        console.log(school)
-      let res = ""
+      console.log(school);
+      let res = "";
       if (school) {
-        res = await fetch(`http://localhost:3000/api/answers?school =${school}`, {
-            method: "GET",
+        res = await fetch(`${API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
+          method: "GET",
         });
       } else {
-        res = await fetch("http://localhost:3000/api/answers", {
-            method: "GET",
+        res = await fetch(`${API_BASE}/api/answers`, {
+          method: "GET",
         });
       }
 
