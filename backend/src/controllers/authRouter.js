@@ -2,6 +2,7 @@ import express from 'express';
 import admin from 'firebase-admin';
 import axios from 'axios';
 
+
 const router = express.Router();
 
 // Register - POST /api/auth/register
@@ -41,7 +42,6 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Запрос в Firebase REST API для входа
     const { data } = await axios.post(
       `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.FIREBASE_API_KEY}`,
       {
@@ -51,11 +51,18 @@ router.post('/login', async (req, res) => {
       }
     );
 
-    return res.status(200).json({ 
-      uid: data.localId, 
-      email: data.email, 
-      token: data.idToken 
+    res.cookie("token", data.idToken, {
+      httpOnly: true,
+      secure: false,
+      sameSite: "none",   // 🔥 ВАЖНО
     });
+
+    return res.status(200).json({
+      uid: data.localId,
+      email: data.email,
+      token: data.idToken
+    });
+
   } catch (error) {
     const errorMessage = error.response?.data?.error?.message || error.message;
     return res.status(401).json({ error: errorMessage });
@@ -65,7 +72,14 @@ router.post('/login', async (req, res) => {
 // Get current user - GET /api/auth/me
 router.get('/me', async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
+    let { token } = req.body;
+
+    if (!token) {
+      token = req.headers.authorization?.split(' ')[1];
+      if (!token) {
+        token = req.cookies.token
+      }
+    }
     
     if (!token) {
       return res.status(401).json({ error: "Токен не предоставлен" });

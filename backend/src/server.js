@@ -5,6 +5,7 @@ import qrcode from 'qrcode';
 import session from 'express-session';
 import TestResult from './models/TestResult.js';
 import { v4 as uuidv4 } from 'uuid';
+import cookieParser from 'cookie-parser';
 import 'dotenv/config';
 
 import { getQuestions, getQuestionsData } from './controllers/questionController.js';
@@ -13,7 +14,22 @@ import authRouter from './controllers/authRouter.js';
 import getColleges from './controllers/collegesController.js';
 
 const app = express();
-app.use(cors());
+const allowedOrigins = ["http://localhost:3001", "http://localhost:3000"];
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  exposedHeaders: ["set-cookie"]
+}));
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 app.use(express.json());
 app.use(session({
   secret: 'your-secret-key', // Замените на безопасный секрет
@@ -21,6 +37,8 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false } // Для разработки; в продакшене true с HTTPS
 }));
+app.use(cookieParser());
+
 
 // Initialize Firebase Admin
 let db;

@@ -175,7 +175,7 @@ router.post('/', async (req, res) => {
 });
 
 router.get('/', async (req, res) => {
-  const { grade, school } = req.body || {};
+  const { grade, school } = req.query || {};
   try {
     const answersSnapshot = await req.db.collection('results').get();
     let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -192,7 +192,7 @@ router.get('/', async (req, res) => {
         }
       }
     }
-    res.json(answers)
+    res.json({ answers, count: answers.length })
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });
