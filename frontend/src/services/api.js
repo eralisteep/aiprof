@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:3000';
+const API_BASE = process.env.API_BASE || 'http://localhost:3000';
 
 export const api = {
   startSession: (qrCode) => axios.post(`${API_BASE}/api/start-session`, { qrCode }),
