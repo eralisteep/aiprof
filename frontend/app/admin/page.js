@@ -26,10 +26,14 @@ function ScheduleUploadPage() {
       if (school) {
         res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
           method: "GET",
+          credentials: "include"
+
         });
       } else {
         res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
           method: "GET",
+          credentials: "include"
+
         });
       }
 
