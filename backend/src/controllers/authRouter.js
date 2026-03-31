@@ -54,7 +54,7 @@ router.post('/login', async (req, res) => {
 
     res.cookie("token", data.idToken, {
       httpOnly: true,
-      secure: false,
+      secure: true,
       sameSite: "none",   // 🔥 ВАЖНО
     });
 

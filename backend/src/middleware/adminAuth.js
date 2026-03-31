@@ -3,10 +3,10 @@ import admin from 'firebase-admin';
 // Middleware для проверки аутентификации и роли администратора
 export async function adminAuthMiddleware(req, res, next) {
   try {
-    let token = req.headers.authorization?.split(' ')[1];
+    let token = req.cookies?.token;
     
     if (!token) {
-      token = req.cookies?.token;
+      token = req.cookies?.authToken;
     }
 
     if (!token) {
