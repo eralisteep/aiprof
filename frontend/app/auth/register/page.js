@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useAuth } from "@/src/context/authContext";
 import { useRouter } from "next/navigation";
 import styles from "@/src/auth/register/register.module.css";
+import { withAdminProtection } from "@/src/hoc/withAdminProtection";
 
-export default function Register() {
+function Register() {
   const { register, registerError } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -76,3 +77,5 @@ export default function Register() {
     </div>
   );
 }
+
+export default withAdminProtection(Register);

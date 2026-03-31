@@ -1,6 +1,7 @@
 import express from 'express';
 import admin from 'firebase-admin';
 import axios from 'axios';
+import { adminAuthMiddleware } from '../middleware/adminAuth.js';
 
 
 const router = express.Router();
@@ -70,52 +71,30 @@ router.post('/login', async (req, res) => {
 });
 
 // Get current user - GET /api/auth/me
-router.get('/me', async (req, res) => {
+router.get('/me', adminAuthMiddleware, async (req, res) => {
   try {
-    let { token } = req.body;
-
-    if (!token) {
-      token = req.headers.authorization?.split(' ')[1];
-      if (!token) {
-        token = req.cookies.token
-      }
-    }
-    
-    if (!token) {
-      return res.status(401).json({ error: "Токен не предоставлен" });
-    }
-
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    const user = await req.db.collection("users").doc(decodedToken.uid).get();
-
-    if (!user.exists) {
-      return res.status(404).json({ error: "Пользователь не найден" });
-    }
-
-    return res.status(200).json({ id: user.id, ...user.data() });
+    return res.status(200).json({ id: req.user.uid, ...req.user });
   } catch (error) {
-    return res.status(401).json({ error: "Неверный токен: " + error.message });
+    return res.status(401).json({ error: "Ошибка: " + error.message });
   }
 });
 
 // Logout - POST /api/auth/logout
-router.post('/logout', (req, res) => {
+router.post('/logout', adminAuthMiddleware, (req, res) => {
   // В REST API логаут обычно осуществляется удалением токена на фронте
   return res.status(200).json({ message: "Logout successful" });
 });
 
 // Change password - POST /api/auth/changepassword
-router.post('/changepassword', async (req, res) => {
+router.post('/changepassword', adminAuthMiddleware, async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1];
     const { newPassword } = req.body;
 
-    if (!token || !newPassword) {
-      return res.status(400).json({ error: "Токен и newPassword обязательны" });
+    if (!newPassword) {
+      return res.status(400).json({ error: "newPassword обязателен" });
     }
 
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    await admin.auth().updateUser(decodedToken.uid, { password: newPassword });
+    await admin.auth().updateUser(req.user.uid, { password: newPassword });
 
     return res.status(200).json({ message: "Пароль изменен успешно" });
   } catch (error) {
@@ -124,18 +103,11 @@ router.post('/changepassword', async (req, res) => {
 });
 
 // Verify token - POST /api/auth/verify
-router.post('/verify', async (req, res) => {
+router.post('/verify', adminAuthMiddleware, async (req, res) => {
   try {
-    const token = req.headers.authorization?.split(' ')[1] || req.body.token;
-
-    if (!token) {
-      return res.status(401).json({ error: "Токен не предоставлен" });
-    }
-
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    return res.status(200).json({ valid: true, uid: decodedToken.uid });
+    return res.status(200).json({ valid: true, uid: req.user.uid });
   } catch (error) {
-    return res.status(401).json({ error: "Неверный токен: " + error.message });
+    return res.status(401).json({ error: "Ошибка: " + error.message });
   }
 });
 

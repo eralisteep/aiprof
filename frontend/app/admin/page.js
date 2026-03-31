@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import { withAdminProtection } from "@/src/hoc/withAdminProtection";
 
-export default function ScheduleUploadPage() {
+function ScheduleUploadPage() {
   const [school, setSchool] = useState(null);
   const [status, setStatus] = useState("");
   const [answers, setAnswers] = useState("");
@@ -138,3 +139,5 @@ export default function ScheduleUploadPage() {
     </div>
   );
 }
+
+export default withAdminProtection(ScheduleUploadPage);
