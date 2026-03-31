@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
 axios.defaults.baseURL = process.env.API_BASE || "http://localhost:3000";
+console.log(process.env.API_BASE)
 axios.defaults.withCredentials = true; // Важно для cookie из /login и /me
 
 const AuthContext = createContext();
