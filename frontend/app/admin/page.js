@@ -94,14 +94,26 @@ function ScheduleUploadPage() {
         )}
 
         {answers && (
-          <div>
-          <div>{answers.answers.count} - ответов</div>
-            {answers.answers.answers.map((item) => (
-              <div key={item.school}>
-                <h2>Школа №{item.school}</h2>
-                <div>{item.count} - ответов</div>
-              </div>
-            ))}
+          <div className="mt-6">
+            <div className="text-white mb-4">Всего ответов: {answers.answers.count}</div>
+            <div className="overflow-x-auto">
+              <table className="table table-zebra w-full text-white">
+                <thead>
+                  <tr>
+                    <th>Школа</th>
+                    <th>Количество ответов</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {answers.answers.answers.map((item) => (
+                    <tr key={item.school}>
+                      <td>Школа №{item.school}</td>
+                      <td>{item.count}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
