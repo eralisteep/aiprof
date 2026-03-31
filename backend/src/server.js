@@ -31,10 +31,13 @@ app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 app.use(express.json());
 app.use(session({
-  secret: 'your-secret-key', // Замените на безопасный секрет
+  secret: 'germany',
   resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Для разработки; в продакшене true с HTTPS
+  saveUninitialized: false,
+  cookie: {
+    secure: true,
+    sameSite: "none"
+  }
 }));
 app.use(cookieParser());
 
