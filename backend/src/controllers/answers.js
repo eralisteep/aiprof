@@ -4,6 +4,33 @@ import analyzeTestResult from './AIController.js';
 
 const router = express.Router();
 
+//groupBySchool
+function groupBySchool(data) {
+  const result = {};
+
+  data.forEach(item => {
+    const school = item.user?.school;
+
+    if (!school) return;
+
+    if (!result[school]) {
+      result[school] = {
+        school: school,
+        count: 0,
+        answers: []
+      };
+    }
+
+    result[school].count += 1;
+    result[school].answers.push(item);
+  });
+
+  return {
+    count: data.length,
+    answers: Object.values(result)
+  };
+}
+
 // Calculate profile from answers
 function calculateProfile(answers, questions) {
   // answers: { q1: 0, q2: 2, ... }
@@ -179,20 +206,20 @@ router.get('/', async (req, res) => {
   try {
     const answersSnapshot = await req.db.collection('results').get();
     let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    if (school && grade) {
-      answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
-    } else {
-      if (school || grade){
-        if (grade) {
-          console.log(grade)
-          answers = answers.filter((a)=>a?.user?.grade == grade)
-        }
-        if (school) {
-          answers = answers.filter((a)=>a?.user?.school == school)
-        }
-      }
-    }
-    res.json({ answers, count: answers.length })
+    answers = groupBySchool(answers)
+    // if (school && grade) {
+    //   answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
+    // } else {
+    //   if (school || grade){
+    //     if (grade) {
+    //       answers = answers.filter((a)=>a?.user?.grade == grade)
+    //     }
+    //     if (school) {
+    //       answers = answers.filter((a)=>a?.user?.school == school)
+    //     }
+    //   }
+    // }
+    res.json({ answers })
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal server error' });

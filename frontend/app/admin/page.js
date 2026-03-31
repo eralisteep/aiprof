@@ -21,7 +21,6 @@ export default function ScheduleUploadPage() {
     setStatus("⏳ Загружается...");
 
     try {
-      console.log(school);
       let res = "";
       if (school) {
         res = await fetch(`${API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
@@ -37,7 +36,9 @@ export default function ScheduleUploadPage() {
 
       const result = await res.json();
 
-      setAnswers(result)
+      await setAnswers(result)
+      console.log(answers)
+
 
       if (res.ok) {
         setStatus(`✅ Успешно`);
@@ -88,6 +89,19 @@ export default function ScheduleUploadPage() {
         )}
 
         {answers && (
+          <div>
+          <div>{answers.answers.count} - ответов</div>
+            {answers.answers.answers.map((item) => (
+              <div key={item.school}>
+                <h2>Школа №{item.school}</h2>
+                <div>{item.count} - ответов</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+      {/* 
+        {answers && (
             <div>
                 <div>{answers.count}</div>
                 {answers.answers.map((item) => (
@@ -118,7 +132,7 @@ export default function ScheduleUploadPage() {
                     </div>
                 ))}
             </div>
-        )}
+        )} */}
       </div>
 
     </div>
