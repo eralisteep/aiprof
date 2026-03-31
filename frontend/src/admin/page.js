@@ -12,7 +12,7 @@ export default function ScheduleUploadPage() {
     setStatus("");
   };
 
-  const API_BASE = process.env.API_BASE || "http://localhost:3000";
+  const NEXT_PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000";
 
   const handleUpload = async () => {
     setLoading(true);
@@ -25,7 +25,7 @@ export default function ScheduleUploadPage() {
         formData.append("file", file);
       }
 
-      const res = await fetch(`${API_BASE}/api/answers`, {
+      const res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
         method: "GET",
         body: formData,
       });

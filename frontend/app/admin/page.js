@@ -13,7 +13,7 @@ export default function ScheduleUploadPage() {
     setStatus("");
   };
 
-  const API_BASE = process.env.API_BASE || "http://localhost:3000";
+  const NEXT_PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000";
 
   const handleUpload = async () => {
 
@@ -23,11 +23,11 @@ export default function ScheduleUploadPage() {
     try {
       let res = "";
       if (school) {
-        res = await fetch(`${API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
+        res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
           method: "GET",
         });
       } else {
-        res = await fetch(`${API_BASE}/api/answers`, {
+        res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
           method: "GET",
         });
       }

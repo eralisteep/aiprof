@@ -3,8 +3,8 @@ import { createContext, useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
-axios.defaults.baseURL = process.env.API_BASE || "http://localhost:3000";
-console.log(process.env.API_BASE)
+axios.defaults.baseURL = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000";
+console.log(process.env.NEXT_PUBLIC_API_BASE)
 axios.defaults.withCredentials = true; // Важно для cookie из /login и /me
 
 const AuthContext = createContext();

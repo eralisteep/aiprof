@@ -13,11 +13,11 @@ const Test = () => {
     loadQuestions();
   }, [stage]);
 
-  const API_BASE = process.env.API_BASE || "http://localhost:3000";
+  const NEXT_PUBLIC_API_BASE = process.env.NEXT_PUBLIC_API_BASE || "http://localhost:3000";
 
   const loadQuestions = async () => {
     try {
-      const response = await axios.get(`${API_BASE}/api/questions?stage=${stage}`);
+      const response = await axios.get(`${NEXT_PUBLIC_API_BASE}/api/questions?stage=${stage}`);
       setQuestions(response.data);
     } catch (error) {
       console.error('Failed to load questions', error);
@@ -28,14 +28,14 @@ const Test = () => {
     const questionId = questions[currentQuestion].id;
 
     // Submit answer
-    await axios.post(`${API_BASE}/api/session/${sessionId}/answer`, { questionId, answer });
+    await axios.post(`${NEXT_PUBLIC_API_BASE}/api/session/${sessionId}/answer`, { questionId, answer });
 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
       if (stage === 'core') {
         // Go to adaptive
-        const response = await axios.post(`${API_BASE}/api/session/${sessionId}/next-stage`);
+        const response = await axios.post(`${NEXT_PUBLIC_API_BASE}/api/session/${sessionId}/next-stage`);
         setStage('adaptive');
         setCurrentQuestion(0);
         setQuestions(response.data.questions);
