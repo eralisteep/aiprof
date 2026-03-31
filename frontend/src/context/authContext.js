@@ -3,6 +3,8 @@ import { createContext, useContext } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 
+console.log("uyhgfghjhgghgvfg"+process.env.API_BASE)
+console.log("p;plplplpplpp"+axios.defaults.baseURL)
 axios.defaults.baseURL = process.env.API_BASE || "http://localhost:3000";
 axios.defaults.withCredentials = true; // Важно для cookie из /login и /me
 
