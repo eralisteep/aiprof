@@ -94,23 +94,33 @@ function ScheduleUploadPage() {
         )}
 
         {answers && (
-          <div className="mt-6">
-            <div className="text-white mb-4">Всего ответов: {answers.answers.count}</div>
-            <div className="overflow-x-auto">
-              <table className="table table-zebra w-full text-white">
-                <thead>
-                  <tr>
-                    <th>Школа</th>
-                    <th>Количество ответов</th>
+          <div className="mt-8 p-6 bg-slate-900/50 rounded-2xl border border-white/10 shadow-xl">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-xl font-bold text-white">Статистика по школам</h3>
+              <span className="badge badge-primary badge-lg p-4 gap-2">
+                Всего ответов: <span className="font-mono font-bold">{answers.answers.count}</span>
+              </span>
+            </div>
+
+            <div className="overflow-x-auto rounded-xl border border-white/5">
+              <table className="table table-zebra w-full">
+                <tbody className="text-gray-200">
+                  <tr className="border-b border-white/10">
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Школа</th>
+                    {answers.answers.answers.map((item) => (
+                      <td key={item.school} className="text-center font-medium min-w-[120px]">
+                        Школа №{item.school}
+                      </td>
+                    ))}
                   </tr>
-                </thead>
-                <tbody>
-                  {answers.answers.answers.map((item) => (
-                    <tr key={item.school}>
-                      <td>Школа №{item.school}</td>
-                      <td>{item.count}</td>
-                    </tr>
-                  ))}
+                  <tr>
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Ответы</th>
+                    {answers.answers.answers.map((item) => (
+                      <td key={item.school} className="text-center">
+                        <span className="badge badge-ghost font-mono">{item.count}</span>
+                      </td>
+                    ))}
+                  </tr>
                 </tbody>
               </table>
             </div>
