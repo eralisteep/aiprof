@@ -80,9 +80,9 @@ app.use('/api/auth', authRouter);
 app.use('/api/answers', adminAuthMiddleware, answersRouter);
 // Routes
 // Получение вопросов
-app.get('/api/questions', adminAuthMiddleware, (req, res) => getQuestions(req, res));
+app.get('/api/questions', (req, res) => getQuestions(req, res));
 
-app.get('/api/colleges', adminAuthMiddleware, (req, res) => getColleges(req, res));
+app.get('/api/colleges', (req, res) => getColleges(req, res));
 
 // Получение адаптивных вопросов
 // app.post('/api/get-adaptive-questions', (req, res) => getAdaptiveQuestions(req, res));
