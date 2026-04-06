@@ -76,8 +76,10 @@ app.use((req, res, next) => {
 
 // Controllers
 
+// adminAuthMiddleware для защиты путей
+
 app.use('/api/auth', authRouter);
-app.use('/api/answers', adminAuthMiddleware, answersRouter);
+app.use('/api/answers', answersRouter);
 // Routes
 // Получение вопросов
 app.get('/api/questions', (req, res) => getQuestions(req, res));
@@ -87,7 +89,7 @@ app.get('/api/colleges', (req, res) => getColleges(req, res));
 // Получение адаптивных вопросов
 // app.post('/api/get-adaptive-questions', (req, res) => getAdaptiveQuestions(req, res));
 
-app.post('/api/result', adminAuthMiddleware, (req, res) => {
+app.post('/api/result', (req, res) => {
     const { answers } = req.body;
     const testRef = req.db.collection('testResults').doc();
     const testResult = new TestResult(testRef.id, 1, answers, new Date());
