@@ -61,14 +61,12 @@ function ScheduleUploadPage() {
   return (
     <div className="min-h-screen min-w-screen bg-gray-100 flex flex-col items-center justify-center p-6">
       <div className="bg-black shadow-lg rounded-2xl p-6 w-full max-w-md">
-        <h1 className="text-2xl font-semibold mb-4 text-center">
-          📅 Загрузка расписания
-        </h1>
+
 
         <input
           type="text"
           onChange={handleSchoolChange}
-          className="school-input school-input-bordered school-input-primary w-full mb-4"
+          className="school-input school-input-bordered school-input-primary w-full mb-4 p-0"
         />
 
         <button
@@ -95,32 +93,36 @@ function ScheduleUploadPage() {
 
         {answers && (
           <div className="mt-8 p-6 bg-slate-900/50 rounded-2xl border border-white/10 shadow-xl">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-bold text-white">Статистика по школам</h3>
+            {/* <div className="flex items-center justify-between mb-6 stats"> */}
+
+              {/* <h3 className="text-xl font-bold text-white">Статистика по школам</h3>
               <span className="badge badge-primary badge-lg p-4 gap-2">
                 Всего ответов: <span className="font-mono font-bold">{answers.answers.count}</span>
               </span>
-            </div>
+            </div> */}
 
             <div className="overflow-x-auto rounded-xl border border-white/5">
               <table className="table table-zebra w-full">
                 <tbody className="text-gray-200">
-                  <tr className="border-b border-white/10">
-                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Школа</th>
-                    {answers.answers.answers.map((item) => (
-                      <td key={item.school} className="text-center font-medium min-w-[120px]">
-                        Школа №{item.school}
-                      </td>
-                    ))}
+                  <tr className="border-b border-white/10 rounded-xl border border-white/5">
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Школы</th>
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Всего ответов:{answers.answers.count}</th>
                   </tr>
-                  <tr>
-                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Ответы</th>
                     {answers.answers.answers.map((item) => (
-                      <td key={item.school} className="text-center">
-                        <span className="badge badge-ghost font-mono">{item.count}</span>
-                      </td>
+                      <tr>
+                        <td key={item.school} className="text-center font-medium min-w-[120px]">
+                          {(isNaN(item.school))?(
+                            item.school
+                          ):(
+                            <>Школа №{item.school}</>
+                          )
+                          }
+                        </td>
+                        <td key={item.school} className="text-center">
+                          <span className="badge badge-ghost font-mono">{item.count}</span>
+                        </td>
+                      </tr>
                     ))}
-                  </tr>
                 </tbody>
               </table>
             </div>
