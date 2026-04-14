@@ -235,7 +235,7 @@ function ScheduleUploadPage() {
 
       const result = await res.json();
 
-      await setAnswers(result)
+      await setAnswers(result.answers)
 
 
       if (res.ok) {
