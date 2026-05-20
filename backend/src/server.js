@@ -68,8 +68,12 @@ try {
   db = null; // Или использовать mock
 }
 
-// Middleware to pass db to controllers
+// Middleware to pass db to controllers and fail fast if Firestore is unavailable
 app.use((req, res, next) => {
+  if (!db) {
+    console.error('Firestore database is not initialized. Verify Firebase environment variables.');
+    return res.status(500).json({ error: 'Database not initialized' });
+  }
   req.db = db;
   next();
 });

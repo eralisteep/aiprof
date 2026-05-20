@@ -15,7 +15,7 @@ if(language !== "ru"){
     prompt = `Пайдаланушының тест нәтижелерін сұрақтар мен жауаптар бойынша талдаңыз. Қысқаша және нақты жауап беріңіз: қандай мамандықтар пайдаланушыға сәйкес, қандай дағдыларды дамыту керек, және 1-2 ұсыныс беріңіз. Жауап форматы: қысқа мәтін.
 
 Сұрақтар:
-${questions.map((q, i) => `${i+1}. ${q.text.ru}`).join("n")}
+${questions.map((q, i) => `${i+1}. ${q.text.ru}`).join("\n")}
 
 Пайдаланушының жауаптары (нұсқалар нөмірлері бойынша):
 ${Object.entries(answers).map(([qid, ans]) => `${qid}: ${ans}`).join(", ")}
@@ -58,7 +58,7 @@ try {
     const resultText = response.data.choices?.[0]?.message?.content;
     console.log("Ответ OpenAI:", resultText);
     if (!resultText) {
-    throw new Error("Ответ OpenAI пустой или некорректный.");
+        throw new Error("Ответ OpenAI пустой или некорректный.");
     }
     console.log("Анализ результата теста:", resultText.trim());
     return resultText;

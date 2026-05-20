@@ -149,6 +149,11 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Missing or invalid answers' });
   }
 
+  if (!req.db) {
+    console.error('Firestore database is not attached to the request.');
+    return res.status(500).json({ error: 'Database not initialized' });
+  }
+
   try {
     const questionsSnapshot = await req.db.collection('questions').get();
     const questions = questionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
