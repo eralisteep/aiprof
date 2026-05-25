@@ -6,6 +6,7 @@ export default function ScheduleUploadPage() {
   const [file, setFile] = useState(null);
   const [status, setStatus] = useState("");
   const [loading, setLoading] = useState(false);
+  const [directionFilter, setDirectionFilter] = useState(-1);
 
   const handleFileChange = (e) => {
     setFile(e.target.value);
@@ -25,14 +26,24 @@ export default function ScheduleUploadPage() {
         formData.append("file", file);
       }
 
-      const res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
-        method: "GET",
-        body: formData,
-      });
+      let res = null
+
+      if (directionFilter) {
+        const res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers?direction=true`, {
+          method: "GET",
+          body: formData,
+        });
+      } else {
+        const res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
+          method: "GET",
+          body: formData,
+        });
+      }
 
       const result = await res.json();
 
       if (res.ok) {
+        console.log(result.message)
         setStatus(`✅ Успешно: ${result.message}`);
       } else {
         setStatus(`❌ Ошибка: ${result.error || "Неизвестная ошибка"}`);
@@ -65,6 +76,9 @@ export default function ScheduleUploadPage() {
         >
           {loading ? "Загрузка..." : "📤 Отправить"}
         </button>
+
+        <h3>Фильтр по направлению</h3>
+        <input type="checkbox" onInput={setDirectionFilter(directionFilter*-1)}></input>
 
         {status && (
           <p

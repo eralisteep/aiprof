@@ -8,9 +8,10 @@ import { withAdminProtection } from "@/src/hoc/withAdminProtection";
 function ScheduleUploadPage() {
   const [school, setSchool] = useState(null);
   const [status, setStatus] = useState("");
-  const [answers, setAnswers] = useState("")
+  const [answers, setAnswers] = useState("");
   const [loading, setLoading] = useState(false);
   const [selectedSchool, setSelectedSchool] = useState("");
+  const [directionMode, setDirectionMode] = useState(false);
 
   const handleSchoolChange = (e) => {
     setSchool(e.target.value);
@@ -216,22 +217,23 @@ function ScheduleUploadPage() {
     setStatus("⏳ Загружается...");
 
     try {
-      let res = "";
-      if (school) {
-        res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers?school=${encodeURIComponent(school)}`, {
-          method: "GET",
-          credentials: "include"
+      let url = `${NEXT_PUBLIC_API_BASE}/api/answers`;
+      const params = new URLSearchParams();
 
-        });
-      } else {
-        res = await fetch(`${NEXT_PUBLIC_API_BASE}/api/answers`, {
-          method: "GET",
-          credentials: "include"
-
-        });
+      if (directionMode) {
+        params.set("direction", "true");
+      } else if (school) {
+        params.set("school", school);
       }
 
+      if ([...params].length) {
+        url += `?${params.toString()}`;
+      }
 
+      const res = await fetch(url, {
+        method: "GET",
+        credentials: "include"
+      });
 
       const result = await res.json();
 
@@ -260,7 +262,22 @@ function ScheduleUploadPage() {
           type="text"
           onChange={handleSchoolChange}
           className="school-input school-input-bordered school-input-primary w-full mb-4 p-0"
+          placeholder="Фильтр по школе (игнорируется в режиме направлений)"
         />
+
+        <label className="flex items-center gap-2 mb-4 text-sm text-white">
+          <input
+            id="directionMode"
+            type="checkbox"
+            checked={directionMode}
+            onChange={(e) => {
+              setDirectionMode(e.target.checked);
+              setStatus("");
+            }}
+            className="checkbox checkbox-primary"
+          />
+          Показать таблицу по направлениям (самое подходящее направление — matchResults[0].directionTitle.ru)
+        </label>
 
         <button
           onClick={handleUpload}
@@ -299,52 +316,63 @@ function ScheduleUploadPage() {
               <table className="table table-zebra w-full">
                 <tbody className="text-gray-200">
                   <tr className="border-b border-white/10 rounded-xl border border-white/5">
-                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Школы</th>
-                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">Всего ответов:{answers.count}</th>
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">
+                      {directionMode ? "Направление" : "Школы"}
+                    </th>
+                    <th className="bg-slate-800 text-white font-semibold uppercase text-xs tracking-wider">
+                      Всего ответов: {answers.count}
+                    </th>
                   </tr>
-                    {answers.answers.map((item) => (
-                      <tr>
-                        <td key={item.school} className="text-center font-medium min-w-[120px]">
-                          {(isNaN(item.school))?(
-                            item.school
-                          ):(
-                            <>Школа №{item.school}</>
-                          )
-                          }
-                        </td>
-                        <td key={item.school + "c"} className="text-center">
-                          <span className="badge badge-ghost font-mono">{item.count}</span>
-                        </td>
-                      </tr>
-                    ))}
+                  {answers.answers.map((item) => (
+                    <tr key={item.school}>
+                      <td className="text-center font-medium min-w-[120px]">
+                        {directionMode ? (
+                          item.school
+                        ) : isNaN(item.school) ? (
+                          item.school
+                        ) : (
+                          <>Школа №{item.school}</>
+                        )}
+                      </td>
+                      <td className="text-center">
+                        <span className="badge badge-ghost font-mono">{item.count}</span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            <h2>
-              Скачать результаты в PDF
-            </h2>
-            <select
-              value={selectedSchool}
-              onChange={(e) => setSelectedSchool(e.target.value)}
-              className="select select-bordered w-full mb-4"
-            >
-              <option value="">Все школы (статистика)</option>
-              {answers.answers.map((item) => (
-                <option key={item.school} value={item.school}>
-                  {(isNaN(item.school))?(
-                    item.school
-                  ):(
-                    <>Школа №{item.school} (детальные результаты)</>
-                  )}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={handleDownloadPDF}
-              className="btn btn-primary w-full"
-            >
-              📥 Скачать PDF
-            </button>
+            {directionMode ? (
+              <p className="mt-4 text-sm text-gray-300">
+                Показано количество ответов, в которых это направление является самым подходящим (matchResults[0].directionTitle.ru).
+              </p>
+            ) : (
+              <>
+                <h2>Скачать результаты в PDF</h2>
+                <select
+                  value={selectedSchool}
+                  onChange={(e) => setSelectedSchool(e.target.value)}
+                  className="select select-bordered w-full mb-4"
+                >
+                  <option value="">Все школы (статистика)</option>
+                  {answers.answers.map((item) => (
+                    <option key={item.school} value={item.school}>
+                      {(isNaN(item.school)) ? (
+                        item.school
+                      ) : (
+                        <>Школа №{item.school} (детальные результаты)</>
+                      )}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="btn btn-primary w-full"
+                >
+                  📥 Скачать PDF
+                </button>
+              </>
+            )}
           </div>
         )}
 

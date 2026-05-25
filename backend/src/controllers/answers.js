@@ -5,6 +5,33 @@ import analyzeTestResult from './AIController.js';
 const router = express.Router();
 
 //groupBySchool
+function groupByDirection(data) {
+  const result = {};
+
+  data.forEach(item => {
+    const school = item.matchResults[0]?.directionTitle?.ru;
+
+    if (!school) return;
+
+    if (!result[school]) {
+      result[school] = {
+        school: school,
+        count: 0,
+        answers: []
+      };
+    }
+
+    result[school].count += 1;
+    result[school].answers.push(item);
+  });
+
+  return {
+    count: data.length,
+    answers: Object.values(result)
+  };
+}
+
+//groupBySchool
 function groupBySchool(data) {
   const result = {};
 
@@ -208,28 +235,54 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
   const { grade, school } = req.query || {};
-  try {
-    const answersSnapshot = await req.db.collection('results').get();
-    let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    answers = groupBySchool(answers)
-    // if (school && grade) {
-    //   answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
-    // } else {
-    //   if (school || grade){
-    //     if (grade) {
-    //       answers = answers.filter((a)=>a?.user?.grade == grade)
-    //     }
-    //     if (school) {
-    //       answers = answers.filter((a)=>a?.user?.school == school)
-    //     }
-    //   }
-    // }
-    res.json({ answers })
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Internal server error' });
+  const { direction } = req.query || {};
+  if (direction) {
+    console.log(direction)
+    try {
+      const answersSnapshot = await req.db.collection('results').get();
+      let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      answers = groupByDirection(answers)
+      // if (school && grade) {
+      //   answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
+      // } else {
+      //   if (school || grade){
+      //     if (grade) {
+      //       answers = answers.filter((a)=>a?.user?.grade == grade)
+      //     }
+      //     if (school) {
+      //       answers = answers.filter((a)=>a?.user?.school == school)
+      //     }
+      //   }
+      // }
+      res.json({ answers })
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
   }
-
+  else{
+    try {
+      const answersSnapshot = await req.db.collection('results').get();
+      let answers = answersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      answers = groupBySchool(answers)
+      // if (school && grade) {
+      //   answers = answers.filter((a)=>a?.user?.school == school).filter((a)=>a?.user?.grade == grade)
+      // } else {
+      //   if (school || grade){
+      //     if (grade) {
+      //       answers = answers.filter((a)=>a?.user?.grade == grade)
+      //     }
+      //     if (school) {
+      //       answers = answers.filter((a)=>a?.user?.school == school)
+      //     }
+      //   }
+      // }
+      res.json({ answers })
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 })
 
 export default router;

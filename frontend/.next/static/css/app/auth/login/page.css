@@ -1,0 +1,97 @@
+/*!***************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/next/dist/build/webpack/loaders/css-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[2]!./node_modules/next/dist/build/webpack/loaders/postcss-loader/src/index.js??ruleSet[1].rules[14].oneOf[7].use[3]!./src/auth/login/login.module.css ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************/
+.login_container__TaWmR {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  min-width: 100vw;
+}
+
+.login_loginBox__Y_PQE {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 350px;
+  text-align: center;
+}
+
+.login_title__n0TAP {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.login_form__Lj1jo {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login_inputGroup__rrZ6w {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.login_inputGroup__rrZ6w label {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 5px;
+}
+
+.login_inputGroup__rrZ6w input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+  color: black;
+}
+
+.login_inputGroup__rrZ6w input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.login_button__lpcOR {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.login_button__lpcOR:hover {
+  background: #0056b3;
+}
+
+.login_button__lpcOR:disabled {
+  background: #999;
+  cursor: not-allowed;
+}
+
+.login_error__GtYjC {
+  color: red;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.login_footerText__l5XO1 {
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.login_footerText__l5XO1 a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.login_footerText__l5XO1 a:hover {
+  text-decoration: underline;
+}
