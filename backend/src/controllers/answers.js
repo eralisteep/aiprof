@@ -224,7 +224,8 @@ router.post('/', async (req, res) => {
     };
     if (user) resultData.user = user;
     
-    await req.db.collection('results').add(resultData);
+    // Включить после починки иииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииииим
+    // await req.db.collection('results').add(resultData);
 
     res.json({ profile: groupedProfile, matchResults, analysis });
   } catch (error) {
