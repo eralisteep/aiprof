@@ -38,7 +38,7 @@ try {
         },
         { role: "user", content: prompt },
         ],
-        max_tokens: 180,
+        max_tokens: 80,
         temperature: 0.6,
     },
     {
